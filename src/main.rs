@@ -1,6 +1,7 @@
 use std::env;
 use std::fs;
 use std::process;
+use std::error::Error;
 
 //TODO: resolve issues
 //  1. main has too many resposibilities (well 2 accept args and read file)
@@ -16,16 +17,21 @@ fn main() {
         process::exit(1);
     });
 
-    run(config);
+    println!("Searching for '{}' in file '{}'", config.query, config.filename);
+
+    if let Err(e) = run(config) {
+        println!("Application error: {}", e);
+        process::exit(1);
+    }
+    // run(config);
 }
 
-fn run(config: Config) {
-    println!("Searching for {} in file {}", config.query, config.filename);
-
-    let contents = fs::read_to_string(config.filename)
-        .expect("Something went wrong reading the file");
+fn run(config: Config) -> Result<(), Box<dyn Error>> {
+    let contents = fs::read_to_string(config.filename)?;
 
     println!("File Contents\n{}", contents);
+
+    Ok(())
 }
 
 struct Config {
@@ -38,6 +44,7 @@ impl Config {
         if args.len() != 3 {
             return Err("not enough arguments");
         }
+        // let name = args[0].clone();
         let query = args[1].clone();
         let filename = args[2].clone();
 
