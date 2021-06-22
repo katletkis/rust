@@ -16,6 +16,10 @@ fn main() {
         process::exit(1);
     });
 
+    run(config);
+}
+
+fn run(config: Config) {
     println!("Searching for {} in file {}", config.query, config.filename);
 
     let contents = fs::read_to_string(config.filename)
