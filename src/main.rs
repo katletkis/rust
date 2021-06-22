@@ -8,23 +8,33 @@ use std::fs;
 //  4. consolidate all error handling code into 1 place
 fn main() {
     let args: Vec<String> = env::args().collect();
-    println!("{:?}", args);
 
-    let query = &args[1];
-    let filename = &args[2];
+    let config: Config = parse_config(&args);
+
+
 
     if args.len() != 3 {
         println!("usage: minigrep {{searchstring}} {{filename}}");
     } else {
-        println!("Searching for {} in file {}", query, filename);
+        println!("Searching for {} in file {}", config.query, config.filename);
 
-        let contents = fs::read_to_string(filename)
+        let contents = fs::read_to_string(config.filename)
             .expect("Something went wrong reading the file");
 
         println!("File Contents\n{}", contents);
     }
 }
 
-fn get_args() {
+struct Config {
+    query: String,
+    filename: String,
+}
 
+fn parse_config(args: &[String]) -> Config {
+    println!("{:?}", args);
+
+    let query = args[1].clone();
+    let filename = args[2].clone();
+
+    Config { query, filename }
 }
