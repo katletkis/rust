@@ -26,3 +26,30 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
+
+#[test]
+fn args() {
+    let args: Vec<String> = vec!["my_prog".to_string(), "foo".to_string(), "bar".to_string()];
+    let config = Config::new(&args).unwrap();
+    assert_eq!(config.query, "foo");
+    assert_eq!(config.filename, "bar");
+}
+
+#[test]
+#[should_panic(expected = "No such file")]
+fn run_bad_config() {
+    let args: Vec<String> = vec!["my_prog".to_string(), "foo".to_string(), "bar".to_string()];
+    let config = Config::new(&args).unwrap();
+    if let Err(e) = run(config) {
+        panic!("{}", e);
+    }
+}
+
+#[test]
+fn run_good_config() {
+    let args: Vec<String> = vec!["my_prog".to_string(), "foo".to_string(), "poem.txt".to_string()];
+    let config = Config::new(&args).unwrap();
+    if let Err(e) = run(config) {
+        panic!("{}", e);
+    }
+}
