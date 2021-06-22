@@ -9,7 +9,7 @@ use std::fs;
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    let config: Config = parse_config(&args);
+    let config = Config::new(&args);
 
 
 
@@ -30,11 +30,13 @@ struct Config {
     filename: String,
 }
 
-fn parse_config(args: &[String]) -> Config {
-    println!("{:?}", args);
+impl Config {
+    fn new(args: &[String]) -> Config {
+        println!("{:?}", args);
 
-    let query = args[1].clone();
-    let filename = args[2].clone();
+        let query = args[1].clone();
+        let filename = args[2].clone();
 
-    Config { query, filename }
+        Config { query, filename }
+    }
 }
