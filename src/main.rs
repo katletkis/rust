@@ -1,5 +1,6 @@
 use std::env;
 use std::fs;
+use std::process;
 
 //TODO: resolve issues
 //  1. main has too many resposibilities (well 2 accept args and read file)
@@ -11,18 +12,12 @@ fn main() {
 
     let config = Config::new(&args);
 
+    println!("Searching for {} in file {}", config.query, config.filename);
 
+    let contents = fs::read_to_string(config.filename)
+        .expect("Something went wrong reading the file");
 
-    if args.len() != 3 {
-        println!("usage: minigrep {{searchstring}} {{filename}}");
-    } else {
-        println!("Searching for {} in file {}", config.query, config.filename);
-
-        let contents = fs::read_to_string(config.filename)
-            .expect("Something went wrong reading the file");
-
-        println!("File Contents\n{}", contents);
-    }
+    println!("File Contents\n{}", contents);
 }
 
 struct Config {
@@ -32,8 +27,11 @@ struct Config {
 
 impl Config {
     fn new(args: &[String]) -> Config {
-        println!("{:?}", args);
-
+        if args.len() != 3 {
+            println!("usage: minigrep {{searchstring}} {{filename}}");
+            process::exit(1);
+            // panic!("not enough arguments");
+        }
         let query = args[1].clone();
         let filename = args[2].clone();
 
